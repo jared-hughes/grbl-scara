@@ -72,21 +72,37 @@
   #else
 #ifdef SCARA
 
+    printString("xy\n");
+    printFloat_CoordValue(target[X_AXIS]);
+    printString("\n");
+    printFloat_CoordValue(target[Y_AXIS]);
+    printString("\n");
     //Change from cartessian to scara coordinates
+    // TODO: optimize a bit -- avoid some trig: consider https://cdn.hackaday.io/files/1627356962454240/gCode2SCARA.c
     float target_scara[N_AXIS];
     float x = target[X_AXIS];
     float y = target[Y_AXIS];
     float r_squared = x*x+y*y;
-    float l1_squared = settings.upper_arm * settings.upper_arm;
-    float l2_squared = settings.lower_arm * settings.lower_arm;
-    float cosA = l1_squared + r_squared - l2_squared;
-    float sinA = sqrt(4*l1_squared*r_squared - cosA*cosA);
-    target_scara[X_AXIS] = (atan2(y, x) - atan2(sinA, cosA)) * settings.steps_per_mm[X_AXIS];
-    cosA -= 2*l1_squared;
-    sinA = sqrt(4*l1_squared*l2_squared - cosA*cosA);
-    target_scara[Y_AXIS] = atan2(sinA, cosA) * settings.steps_per_mm[Y_AXIS];
+    float l1 = settings.upper_arm;
+    float l1_squared = l1 * l1;
+    float l2 = settings.lower_arm;
+    float l2_squared = l2 * l2;
+    float s = (l1 + l2)*(l1 + l2);
+    float sm = (l1 - l2)*(l1 - l2);
+    float theta = 2 * atan2(s - r_squared, r_squared - sm);
+    target_scara[X_AXIS] = theta * settings.steps_per_mm[X_AXIS];
+    target_scara[Y_AXIS] = atan2(y, x) - atan2(l2 * sin(theta), l1 + l2*cos(theta));
+    target_scara[Y_AXIS] *= settings.steps_per_mm[Y_AXIS];
     target_scara[Z_AXIS]=0.0;
+    printString("uv\n");
+    printFloat_CoordValue(target_scara[X_AXIS]);
+    printString("\n");
+    printFloat_CoordValue(target_scara[Y_AXIS]);
+    printString("\n");
+    
     plan_buffer_line(target_scara, feed_rate, invert_feed_rate);
+    
+    printString("done buffer\n");
 
     gc_state.position[X_AXIS]=target[X_AXIS];
     gc_state.position[Y_AXIS]=target[Y_AXIS];
@@ -105,7 +121,7 @@
   void mc_segmented_line(float *position, float *target, float feed_rate, uint8_t invert_feed_rate)
 #endif
 {
-  float mm_per_line_segment=2;  //TODO: move to settings
+  float mm_per_line_segment=10;  //TODO: move to settings
   float mm_of_travel = hypot(target[X_AXIS] - position[X_AXIS],
 		  target[Y_AXIS] - position[Y_AXIS]);
   if (mm_of_travel < 0.001)  return;
@@ -321,8 +337,8 @@ void mc_homing_cycle()
 #else
   gc_sync_position();
   //TODO:put in settings
-  float offsetX=1000; //Desired initial position in cartessian coord's
-  float offsetY=-500;
+  float offsetX=298; //Desired initial position in cartessian coord's
+  float offsetY=0;
   gc_state.position[X_AXIS]=offsetX;
   gc_state.position[Y_AXIS]=offsetY;
 
