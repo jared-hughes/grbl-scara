@@ -30,16 +30,10 @@
 #include "grbl.h" // For Arduino IDE compatibility.
 
 
-/* If POLAR is enabled the coordinates of the machine movement are changed to polar.
- * To active this feature is required to know the distance (d) between the two motors
- * 		___d___
-		\     /       |
-	x_pol\   / y_pol  | y
-		  \ /         |
-	   ___ +
- *	    x
+/* If SCARA is enabled the coordinates of the machine movement are changed to scara.
+ * To activate this feature you must know the length of the two arms
  */
-#define POLAR
+#define SCARA
 
 //Segment straight lines to ensure linear movement when the coordinates system is changed
 #define SEGMENTED_LINES
@@ -50,7 +44,7 @@
 
 // Default settings. Used when resetting EEPROM. Change to desired name in defaults.h
 //#define DEFAULTS_GENERIC
-#define DEFAULTS_POLAR
+#define DEFAULTS_SCARA
 
 
 // Serial baud rate

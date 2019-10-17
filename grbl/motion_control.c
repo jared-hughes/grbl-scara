@@ -70,21 +70,21 @@
   #ifdef USE_LINE_NUMBERS
     plan_buffer_line(target, feed_rate, invert_feed_rate, line_number);
   #else
-#ifdef POLAR
+#ifdef SCARA
 
-    //Change from cartessian to polar coordinates
-    float target_polar[N_AXIS];
-    float x= settings.distance-target[X_AXIS];
-    target_polar[X_AXIS]=sqrt(labs(target[X_AXIS]*target[X_AXIS]+target[Y_AXIS]*target[Y_AXIS]));
-    target_polar[Y_AXIS]=sqrt(labs(x*x+target[Y_AXIS]*target[Y_AXIS]));
-    target_polar[Z_AXIS]=0.0;
-    plan_buffer_line(target_polar, feed_rate, invert_feed_rate);
+    //Change from cartessian to scara coordinates
+    float target_scara[N_AXIS];
+    float x = settings.distance-target[X_AXIS];
+    target_scara[X_AXIS]=sqrt(labs(target[X_AXIS]*target[X_AXIS]+target[Y_AXIS]*target[Y_AXIS]));
+    target_scara[Y_AXIS]=sqrt(labs(x*x+target[Y_AXIS]*target[Y_AXIS]));
+    target_scara[Z_AXIS]=0.0;
+    plan_buffer_line(target_scara, feed_rate, invert_feed_rate);
 
     gc_state.position[X_AXIS]=target[X_AXIS];
     gc_state.position[Y_AXIS]=target[Y_AXIS];
 
 #else
-        plan_buffer_line(target_polar, feed_rate, invert_feed_rate);
+        plan_buffer_line(target, feed_rate, invert_feed_rate);
 #endif
 #endif
 }
@@ -307,7 +307,7 @@ void mc_homing_cycle()
 
   // Homing cycle complete! Setup system for normal operation.
   // -------------------------------------------------------------------------------------
-#ifndef POLAR
+#ifndef SCARA
   // Gcode parser position was circumvented by the limits_go_home() routine, so sync position now.
   gc_sync_position();
 #else

@@ -142,7 +142,7 @@ uint8_t limits_get_state()
 // NOTE: Only the abort realtime command can interrupt this process.
 // TODO: Move limit pin-specific calls to a general function for portability.
 
-#ifndef POLAR
+#ifndef SCARA
 
 void limits_go_home(uint8_t cycle_mask) 
 {
@@ -310,7 +310,7 @@ void limits_go_home(uint8_t cycle_mask)
   // sys.state = STATE_HOMING; // Ensure system state set as homing before returning. 
 }
 
-// POLAR CONFIGURATION: a machine working with polar coordinates needs to now which is its position
+// SCARA CONFIGURATION: a machine working with scara coordinates needs to know which is its position
 // at any time. Therefore we need to do the homing cycle in order to initialize the machine.
 #else 
 void limits_go_home(uint8_t cycle_mask)

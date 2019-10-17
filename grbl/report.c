@@ -449,13 +449,13 @@ void report_realtime_status()
   
   // Report machine position
   if (bit_istrue(settings.status_report_mask,BITFLAG_RT_STATUS_MACHINE_POSITION)) {
-#ifndef POLAR
+#ifndef SCARA
 	  printPgmString(PSTR(",MPos:"));
 #else  //System position in cartesian coord's
 	  printPgmString(PSTR(",SPos:"));
 #endif
     for (idx=0; idx< N_AXIS; idx++) {
-#ifndef POLAR
+#ifndef SCARA
     	printFloat_CoordValue(print_position[idx]);
 #else
     	printFloat_CoordValue(sys.position[idx]/settings.steps_per_mm[idx]);
@@ -466,13 +466,13 @@ void report_realtime_status()
   
   // Report work position
   if (bit_istrue(settings.status_report_mask,BITFLAG_RT_STATUS_WORK_POSITION)) {
-#ifndef POLAR
+#ifndef SCARA
 	  printPgmString(PSTR(",WPos:"));
-#else //Gcode position in polar coord's
+#else //Gcode position in scara coord's
 	  printPgmString(PSTR(",GPos:"));
 #endif
     for (idx=0; idx< N_AXIS; idx++) {
-#ifndef POLAR
+#ifndef SCARA
       // Apply work coordinate offsets and tool length offset to current position.
       print_position[idx] -= gc_state.coord_system[idx]+gc_state.coord_offset[idx];
       if (idx == TOOL_LENGTH_OFFSET_AXIS) { print_position[idx] -= gc_state.tool_length_offset; }

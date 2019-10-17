@@ -35,9 +35,9 @@
   #include "defaults/defaults_generic.h"
 #endif
 
-#ifdef DEFAULTS_POLAR
+#ifdef DEFAULTS_SCARA
   // Grbl generic default settings. Should work across different machines.
-  #include "defaults/defaults_polar.h"
+  #include "defaults/defaults_scara.h"
 #endif
 
 #ifdef DEFAULTS_SHERLINE_5400
