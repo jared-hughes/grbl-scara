@@ -74,9 +74,17 @@
 
     //Change from cartessian to scara coordinates
     float target_scara[N_AXIS];
-    float x = settings.distance-target[X_AXIS];
-    target_scara[X_AXIS]=sqrt(labs(target[X_AXIS]*target[X_AXIS]+target[Y_AXIS]*target[Y_AXIS]));
-    target_scara[Y_AXIS]=sqrt(labs(x*x+target[Y_AXIS]*target[Y_AXIS]));
+    float x = target[X_AXIS];
+    float y = target[Y_AXIS];
+    float r_squared = x*x+y*y;
+    float l1_squared = settings.upper_arm * settings.upper_arm;
+    float l2_squared = settings.lower_arm * settings.lower_arm;
+    float cosA = l1_squared + r_squared - l2_squared;
+    float sinA = sqrt(4*l1_squared*r_squared - cosA*cosA);
+    target_scara[X_AXIS] = (atan2(y, x) - atan2(sinA, cosA)) * settings.steps_per_mm[X_AXIS];
+    cosA -= 2*l1_squared;
+    sinA = sqrt(4*l1_squared*l2_squared - cosA*cosA);
+    target_scara[Y_AXIS] = atan2(sinA, cosA) * settings.steps_per_mm[Y_AXIS];
     target_scara[Z_AXIS]=0.0;
     plan_buffer_line(target_scara, feed_rate, invert_feed_rate);
 

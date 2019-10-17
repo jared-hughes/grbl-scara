@@ -92,8 +92,10 @@ typedef struct {
   uint8_t status_report_mask; // Mask to indicate desired report data.
   float junction_deviation;
   float arc_tolerance;
+  
 #ifdef SCARA
-  float distance; //Distance between motors
+  float upper_arm; // Length of upper arm: measure from axle to axle
+  float lower_arm; // Length of forearm: measure from axle to toolhead
 #endif
   
   uint8_t flags;  // Contains default boolean settings
