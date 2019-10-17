@@ -31,12 +31,12 @@
   #define DEFAULT_X_STEPS_PER_MM 31.831 // actually steps/radian
   #define DEFAULT_Y_STEPS_PER_MM 31.831 // actually steps/radian
   #define DEFAULT_Z_STEPS_PER_MM 250.0
-  #define DEFAULT_X_MAX_RATE 5.0 // rad/min
-  #define DEFAULT_Y_MAX_RATE 5.0 // rad/min
+  #define DEFAULT_X_MAX_RATE 40.0 // rad/min
+  #define DEFAULT_Y_MAX_RATE 40.0 // rad/min
   #define DEFAULT_Z_MAX_RATE 500.0 // mm/min
-  #define DEFAULT_X_ACCELERATION (1.0*60*60) // 10*60*60 rad/min^2 = 10 rad/sec^2
-  #define DEFAULT_Y_ACCELERATION (1.0*60*60) // 10*60*60 rad/min^2 = 10 rad/sec^2
-  #define DEFAULT_Z_ACCELERATION (1.0*60*60) // 10*60*60 mm/min^2 = 10 mm/sec^2
+  #define DEFAULT_X_ACCELERATION (2.0*60*60) // 10*60*60 rad/min^2 = 10 rad/sec^2
+  #define DEFAULT_Y_ACCELERATION (2.0*60*60) // 10*60*60 rad/min^2 = 10 rad/sec^2
+  #define DEFAULT_Z_ACCELERATION (2.0*60*60) // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_X_MAX_TRAVEL 1.0 // rad
   #define DEFAULT_Y_MAX_TRAVEL 1.0 // rad
   #define DEFAULT_Z_MAX_TRAVEL 200.0 // mm
