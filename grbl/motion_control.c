@@ -91,14 +91,13 @@
     float sm = (l1 - l2)*(l1 - l2);
     float theta = 2 * atan2(sqrt(r_squared - sm), sqrt(s - r_squared));
     printString("uv-degrees\n");
-    target_scara[X_AXIS] = theta * settings.steps_per_mm[X_AXIS];
+    target_scara[X_AXIS] = theta;
     printFloat_CoordValue(theta * 180/3.1415);
     printString("\n");
     target_scara[Y_AXIS] = atan2(y, x) -
       atan2(2 * l1 * l2 * sin(theta), l1_squared + r_squared - l2_squared);
     printFloat_CoordValue(target_scara[Y_AXIS] * 180/3.1415);
     printString("\n");
-    target_scara[Y_AXIS] *= settings.steps_per_mm[Y_AXIS];
     target_scara[Z_AXIS]=0.0;
     printString("uv-steps\n");
     printFloat_CoordValue(target_scara[X_AXIS]);
