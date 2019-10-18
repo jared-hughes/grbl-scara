@@ -336,11 +336,9 @@ void mc_homing_cycle()
   gc_sync_position();
 #else
   gc_sync_position();
-  //TODO:put in settings
-  float offsetX=298; //Desired initial position in cartessian coord's
-  float offsetY=0;
-  gc_state.position[X_AXIS]=offsetX;
-  gc_state.position[Y_AXIS]=offsetY;
+  gc_state.position[X_AXIS] = settings.offset[X_AXIS];
+  gc_state.position[Y_AXIS] = settings.offset[Y_AXIS];
+  gc_state.position[Z_AXIS] = settings.offset[Z_AXIS];
 
 #endif
   // If hard limits feature enabled, re-enable hard limits pin change register after homing cycle.

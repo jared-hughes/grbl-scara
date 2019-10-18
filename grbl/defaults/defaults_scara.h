@@ -40,6 +40,9 @@
   #define DEFAULT_X_MAX_TRAVEL 1.0 // rad
   #define DEFAULT_Y_MAX_TRAVEL 1.0 // rad
   #define DEFAULT_Z_MAX_TRAVEL 200.0 // mm
+  #define DEFAULT_X_OFFSET 298.0 // mm
+  #define DEFAULT_Y_OFFSET 0.0 // mm
+  #define DEFAULT_Z_OFFSET 0.0 // mm
   #define DEFAULT_STEP_PULSE_MICROSECONDS 10
   #define DEFAULT_STEPPING_INVERT_MASK 0
   #define DEFAULT_DIRECTION_INVERT_MASK 0
@@ -60,8 +63,5 @@
   #define DEFAULT_HOMING_PULLOFF 1.0 // mm
   #define DEFAULT_UPPER_ARM 138.0 // mm
   #define DEFAULT_LOWER_ARM 160.0 // mm
-  #define DEFAULT_X_OFFSET 298.0 // mm
-  #define DEFAULT_Y_OFFSET 0.0 // mm
-  #define DEFAULT_Z_OFFSET 0.0 // mm
 
 #endif

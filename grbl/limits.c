@@ -316,8 +316,9 @@ void limits_go_home(uint8_t cycle_mask)
 void limits_go_home(uint8_t cycle_mask)
 {
   // TODO: set proper initial position
-  sys.position[X_AXIS] = 298;
-  sys.position[Y_AXIS] = 0;
+  sys.position[X_AXIS] = settings.offset[X_AXIS];
+  sys.position[Y_AXIS] = settings.offset[Y_AXIS];
+  sys.position[Z_AXIS] = settings.offset[Z_AXIS];
   //Idle situated
   printString("\n sys:");
   printFloat_CoordValue(sys.position[X_AXIS]/settings.steps_per_mm[X_AXIS]);

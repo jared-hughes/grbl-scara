@@ -239,6 +239,7 @@ void report_grbl_settings() {
         case 1: printFloat_SettingValue(settings.max_rate[idx]); break;
         case 2: printFloat_SettingValue(settings.acceleration[idx]/(60*60)); break;
         case 3: printFloat_SettingValue(-settings.max_travel[idx]); break;
+        case 4: printFloat_SettingValue(settings.offset[idx]); break;
       }
       #ifdef REPORT_GUI_MODE
         printPgmString(PSTR("\r\n"));
@@ -254,6 +255,7 @@ void report_grbl_settings() {
           case 1: printPgmString(PSTR(" max rate, mm/min")); break;
           case 2: printPgmString(PSTR(" accel, mm/sec^2")); break;
           case 3: printPgmString(PSTR(" max travel, mm")); break;
+          case 4: printPgmString(PSTR(" offset, mm")); break;
         }      
         printPgmString(PSTR(")\r\n"));
       #endif
