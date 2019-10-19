@@ -375,6 +375,14 @@ void limits_soft_check(float *target)
       if (target[idx] > 0 || target[idx] < settings.max_travel[idx]) { soft_limit_error = true; }
     #endif
     
+    #ifdef SCARA
+      float r = sqrt(target[X_AXIS]*target[X_AXIS] + target[Y_AXIS]*target[Y_AXIS]);
+      if (r < abs(settings.upper_arm - settings.lower_arm)
+        || r > settings.upper_arm + settings.lower_arm) {
+        soft_limit_error = true;  
+      }
+    #endif
+    
     if (soft_limit_error) {
       // Force feed hold if cycle is active. All buffered blocks are guaranteed to be within 
       // workspace volume so just come to a controlled stop so position is not lost. When complete
