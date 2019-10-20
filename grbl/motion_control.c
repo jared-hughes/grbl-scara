@@ -81,11 +81,10 @@
   void mc_segmented_line(float *position, float *target, float feed_rate, uint8_t invert_feed_rate)
 #endif
 {
-  float mm_per_line_segment=10;  //TODO: move to settings
   float mm_of_travel = hypot(target[X_AXIS] - position[X_AXIS],
 		  target[Y_AXIS] - position[Y_AXIS]);
-  if (mm_of_travel < 0.001)  return;
-  uint16_t segments = floor(mm_of_travel / mm_per_line_segment);
+  if (mm_of_travel < settings.segmentation_tolerance)  return;
+  uint16_t segments = floor(mm_of_travel / settings.mm_per_segment);
   if (segments) {
       // Multiply inverse feed_rate to compensate for the fact that this movement is approximated
       // by a number of discrete segments. The inverse feed_rate should be correct for the sum of

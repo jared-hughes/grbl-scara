@@ -225,8 +225,10 @@ void report_grbl_settings() {
     printPgmString(PSTR(" (upper_arm, mm)\r\n$29=")); printFloat_SettingValue(settings.lower_arm);
     printPgmString(PSTR(" (lower_arm, mm)\r\n$30=")); printFloat_SettingValue(settings.x_min);
     printPgmString(PSTR(" (x_min, mm)\r\n$31=")); printFloat_SettingValue(sqrt(settings.r_min_sq));
-    printPgmString(PSTR(" (r_min, mm)\r\n$32=")); printFloat_SettingValue(sqrt(settings.r_max_sq));
-    printPgmString(PSTR(" (r_max, mm)\r\n"));
+    printPgmString(PSTR(" (r_min, mm)\r\n$32=")); printFloat_SettingValue(settings.x_min);
+    printPgmString(PSTR(" (r_max, mm)\r\n$33=")); printFloat_SettingValue(settings.segmentation_tolerance);
+    printPgmString(PSTR(" (segmentation_tolerance, mm)\r\n$34=")); printFloat_SettingValue(settings.mm_per_segment);
+    printPgmString(PSTR(" (mm_per_segment, mm)\r\n"));
   #endif
   
   // Print axis settings

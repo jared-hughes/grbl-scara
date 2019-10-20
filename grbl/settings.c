@@ -72,6 +72,10 @@ void settings_restore(uint8_t restore_flag) {
 	settings.homing_pulloff = DEFAULT_HOMING_PULLOFF;
 	settings.upper_arm = DEFAULT_UPPER_ARM;
   settings.lower_arm = DEFAULT_LOWER_ARM;
+  #ifdef SEGMENTED_LINES
+    settings.segmentation_tolerance = DEFAULT_SEGMENTATION_TOLERANCE;
+    settings.mm_per_segment = DEFAULT_MM_PER_SEGMENT;
+  #endif
 
 	settings.flags = 0;
 	if (DEFAULT_REPORT_INCHES) { settings.flags |= BITFLAG_REPORT_INCHES; }
@@ -287,6 +291,8 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
       case 30: settings.x_min = value; break;
       case 31: settings.r_min_sq = value*value; break;
       case 32: settings.r_max_sq = value*value; break;
+      case 33: settings.segmentation_tolerance = value; break;
+      case 34: settings.mm_per_segment = value; break;
       default: 
         return(STATUS_INVALID_STATEMENT);
     }

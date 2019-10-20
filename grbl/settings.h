@@ -113,6 +113,11 @@ typedef struct {
   float homing_seek_rate;
   uint16_t homing_debounce_delay;
   float homing_pulloff;
+  
+  #ifdef SEGMENTED_LINES
+    float segmentation_tolerance;
+    float mm_per_segment;
+  #endif
 } settings_t;
 extern settings_t settings;
 
