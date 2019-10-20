@@ -274,11 +274,11 @@ float system_convert_axis_steps_to_mpos(int32_t *steps, uint8_t idx)
   #elif defined SCARA
     // forward kinematics
     if (idx == X_AXIS) {
-      pos = cos(steps[X_AXIS]/settings.steps_per_mm[X_AXIS]) * settings.lower_arm
-        + cos(steps[Y_AXIS]/settings.steps_per_mm[Y_AXIS]) * settings.upper_arm;
+      pos = cos(steps[L_MOTOR]/settings.steps_per_mm[L_MOTOR]) * settings.lower_arm
+        + cos(steps[U_MOTOR]/settings.steps_per_mm[U_MOTOR]) * settings.upper_arm;
     } else if (idx == Y_AXIS) {
-      pos = sin(steps[X_AXIS]/settings.steps_per_mm[X_AXIS]) * settings.lower_arm
-        + sin(steps[Y_AXIS]/settings.steps_per_mm[Y_AXIS]) * settings.upper_arm;
+      pos = sin(steps[L_MOTOR]/settings.steps_per_mm[L_MOTOR]) * settings.lower_arm
+        + sin(steps[U_MOTOR]/settings.steps_per_mm[U_MOTOR]) * settings.upper_arm;
     } else {
       pos = steps[idx]/settings.steps_per_mm[idx];
     }
@@ -317,12 +317,12 @@ void system_convert_mpos_to_array_steps(int32_t *target_steps, float* position)
   //   return target_scara;
   // }
   float theta = 2 * atan2(sqrt(r_squared - sm), sqrt(s - r_squared));
-  target_steps[Y_AXIS] = lround(settings.steps_per_mm[Y_AXIS] * (atan2(y, x) +
+  target_steps[U_MOTOR] = lround(settings.steps_per_mm[U_MOTOR] * (atan2(y, x) +
     atan2(2 * l1 * l2 * sin(theta), l1_squared + r_squared - l2_squared)));
-  target_steps[X_AXIS] = lround(settings.steps_per_mm[X_AXIS] * (theta - M_PI))
-    + target_steps[Y_AXIS];
+  target_steps[L_MOTOR] = lround(settings.steps_per_mm[L_MOTOR] * (theta - M_PI))
+    + target_steps[U_MOTOR];
   for (idx=0; idx<N_AXIS; idx++) {
-    if (idx != X_AXIS && idx != Y_AXIS) {
+    if (idx != U_MOTOR && idx != L_MOTOR) {
       target_steps[idx] = lround(position[idx] * settings.steps_per_mm[idx]);
     }
   }

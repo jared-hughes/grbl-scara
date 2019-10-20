@@ -275,14 +275,6 @@ uint8_t plan_check_full_buffer()
   float unit_vec[N_AXIS], delta_mm;
   uint8_t idx;
   
-  for (idx = 0; idx < N_AXIS; idx++) {
-    printString("Plan Buffer Line Target: ");
-    printInteger(idx);
-    printString("\t");
-    printFloat_CoordValue(target[idx]);
-    printString("\n");
-  }
-  
   #ifdef COREXY
     target_steps[A_MOTOR] = lround(target[A_MOTOR]*settings.steps_per_mm[A_MOTOR]);
     target_steps[B_MOTOR] = lround(target[B_MOTOR]*settings.steps_per_mm[B_MOTOR]);
@@ -310,18 +302,9 @@ uint8_t plan_check_full_buffer()
         delta_mm = (target_steps[idx] - pl.position[idx])/settings.steps_per_mm[idx];
       }
     #else
-      // printString(" 00 target ");
-      // printFloat_CoordValue(target[idx]);
-      // printString("\n");
       #ifndef SCARA
         target_steps[idx] = lround(target[idx]*settings.steps_per_mm[idx]);
       #endif
-      // printInteger(idx);
-      // printString(" target steps: ");
-      // printFloat_CoordValue(target_steps[idx]);
-      // printString(" -- ");
-      // printFloat_CoordValue(pl.position[idx]);
-      // printString("\n");
       block->steps[idx] = labs(target_steps[idx]-pl.position[idx]);
       block->step_event_count = max(block->step_event_count, block->steps[idx]);
       delta_mm = (target_steps[idx] - pl.position[idx])/settings.steps_per_mm[idx];
@@ -455,11 +438,6 @@ void plan_sync_position()
       }
     #else
       pl.position[idx] = sys.position[idx];
-      // printString("Set position: ");
-      // printInteger(idx);
-      // printString(": ");
-      // printFloat_CoordValue(pl.position[idx]);
-      // printString("\n");
     #endif
   }
 }

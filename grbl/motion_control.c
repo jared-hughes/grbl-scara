@@ -68,15 +68,6 @@
   // Plan and queue motion into planner buffer
   #ifdef USE_LINE_NUMBERS
     plan_buffer_line(target, feed_rate, invert_feed_rate, line_number);
-  #elif defined SCARA
-    // for (int idx = 0; idx < N_AXIS; idx++) {
-    //   printString(" 01 desired ");
-    //   printFloat_CoordValue(desired.pos[idx]);
-    //   printString("\n");
-    // }
-    plan_buffer_line(target, feed_rate, invert_feed_rate);
-    // gc_state.position[X_AXIS] = desired.pos[X_AXIS];
-    // gc_state.position[Y_AXIS] = desired.pos[Y_AXIS];
   #else
     plan_buffer_line(target, feed_rate, invert_feed_rate);
   #endif
@@ -305,7 +296,7 @@ void mc_homing_cycle()
   gc_sync_position();
 #else
   gc_sync_position();
-  // system_convert_mpos_to_array_steps(gc_state.position, settings.offset);
+  system_convert_mpos_to_array_steps(gc_state.position, settings.offset);
 #endif
   // If hard limits feature enabled, re-enable hard limits pin change register after homing cycle.
   limits_init();

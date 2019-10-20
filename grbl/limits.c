@@ -321,38 +321,10 @@ void limits_go_home(uint8_t cycle_mask)
   // update pl.position;
   plan_sync_position();
   //Idle situated
-  // printString("\n sys:");
-  // printFloat_CoordValue(sys.position[X_AXIS]/settings.steps_per_mm[X_AXIS]);
-  // printFloat_CoordValue(sys.position[Y_AXIS]/settings.steps_per_mm[Y_AXIS]);
-  // printString("\n");
   report_realtime_status();
   plan_sync_position(); // Sync planner position to homed machine position.
 
-  // //TODO: put in settings
-  // float offsetX=1000; //Desired initial position in cartesian coord's
-  // float offsetY=-500;
-  // float dist_to_endstopX=100; //distance from the X motor to the endstop
-  // float dist_to_endstopY=100; //distance from the Y motor to the endstop
-  // 
-  // float target2[N_AXIS];
-  // target2[X_AXIS]=(sqrt((offsetX*offsetX)+(offsetY*offsetY)))-dist_to_endstopX;
-  // target2[Y_AXIS]=(sqrt((settings.distance-offsetX)*(settings.distance-offsetX)+(offsetY*offsetY)))-dist_to_endstopY;
-  // target2[Z_AXIS]=0.000;
-  // 
-  // printString("\n trg:");
-  // printFloat_CoordValue(target2[X_AXIS]);
-  // printFloat_CoordValue(target2[Y_AXIS]);
-  // report_realtime_status();
-  // 
-  // do {
-  //     protocol_execute_realtime(); // Check for any run-time commands
-  //     if (sys.abort) { return; } // Bail, if system abort.
-  //     if ( plan_check_full_buffer() ) { protocol_auto_cycle_start(); } // Auto-cycle start when buffer is full.
-  //     else { break; }
-  //   } while (1);
-  // plan_buffer_line(target2, homing_rate, false);
-
-  // sys.state = STATE_HOMING; // Ensure system state set as homing before returning.
+  sys.state = STATE_HOMING; // Ensure system state set as homing before returning.
 }
 #endif
 
@@ -382,13 +354,6 @@ void limits_soft_check(float *target)
       if (r < abs(settings.upper_arm - settings.lower_arm)
         || r > settings.upper_arm + settings.lower_arm) {
         soft_limit_error = true;
-        printString("failure x=");
-        printFloat_CoordValue(target[X_AXIS]);
-        printString("\ty=");
-        printFloat_CoordValue(target[Y_AXIS]);
-        printString("\tr=");
-        printFloat_CoordValue(r);
-        printString("\n");
       }
     #endif
     
