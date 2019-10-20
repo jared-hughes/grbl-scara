@@ -299,7 +299,16 @@ uint8_t plan_check_full_buffer()
         delta_mm = (target_steps[idx] - pl.position[idx])/settings.steps_per_mm[idx];
       }
     #else
+      // printString(" 00 target ");
+      // printFloat_CoordValue(target[idx]);
+      // printString("\n");
       target_steps[idx] = lround(target[idx]*settings.steps_per_mm[idx]);
+      // printInteger(idx);
+      // printString(" coord steps: ");
+      // printFloat_CoordValue(target_steps[idx]);
+      // printString(" -- ");
+      // printFloat_CoordValue(pl.position[idx]);
+      // printString("\n");
       block->steps[idx] = labs(target_steps[idx]-pl.position[idx]);
       block->step_event_count = max(block->step_event_count, block->steps[idx]);
       delta_mm = (target_steps[idx] - pl.position[idx])/settings.steps_per_mm[idx];
@@ -433,6 +442,11 @@ void plan_sync_position()
       }
     #else
       pl.position[idx] = sys.position[idx];
+      // printString("Set position: ");
+      // printInteger(idx);
+      // printString(": ");
+      // printFloat_CoordValue(pl.position[idx]);
+      // printString("\n");
     #endif
   }
 }

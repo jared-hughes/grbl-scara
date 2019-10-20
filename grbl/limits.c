@@ -316,13 +316,29 @@ void limits_go_home(uint8_t cycle_mask)
 void limits_go_home(uint8_t cycle_mask)
 {
   // TODO: set proper initial position
-  sys.position[X_AXIS] = settings.offset[X_AXIS];
-  sys.position[Y_AXIS] = settings.offset[Y_AXIS];
-  sys.position[Z_AXIS] = settings.offset[Z_AXIS];
+  struct Position desired = mc_scara_coord(settings.offset);
+  uint8_t idx;
+  for (idx=0; idx<N_AXIS; idx++) {
+    // printString("Want sys.position (rads): ");
+    // printInteger(idx);
+    // printString(": ");
+    // printFloat_CoordValue(desired.pos[idx]);
+    // printString("\n");
+    sys.position[idx] = desired.pos[idx] * settings.steps_per_mm[idx];
+    // printString("Set sys.position: ");
+    // printInteger(idx);
+    // printString(": ");
+    // printFloat_CoordValue(sys.position[idx]);
+    // printString("\n");
+}
+  report_realtime_status();
+  // update pl.position;
+  plan_sync_position();
   //Idle situated
-  printString("\n sys:");
-  printFloat_CoordValue(sys.position[X_AXIS]/settings.steps_per_mm[X_AXIS]);
-  printFloat_CoordValue(sys.position[Y_AXIS]/settings.steps_per_mm[Y_AXIS]);
+  // printString("\n sys:");
+  // printFloat_CoordValue(sys.position[X_AXIS]/settings.steps_per_mm[X_AXIS]);
+  // printFloat_CoordValue(sys.position[Y_AXIS]/settings.steps_per_mm[Y_AXIS]);
+  // printString("\n");
   report_realtime_status();
   plan_sync_position(); // Sync planner position to homed machine position.
 
@@ -379,7 +395,14 @@ void limits_soft_check(float *target)
       float r = sqrt(target[X_AXIS]*target[X_AXIS] + target[Y_AXIS]*target[Y_AXIS]);
       if (r < abs(settings.upper_arm - settings.lower_arm)
         || r > settings.upper_arm + settings.lower_arm) {
-        soft_limit_error = true;  
+        soft_limit_error = true;
+        printString("failure x=");
+        printFloat_CoordValue(target[X_AXIS]);
+        printString("\ty=");
+        printFloat_CoordValue(target[Y_AXIS]);
+        printString("\tr=");
+        printFloat_CoordValue(r);
+        printString("\n");
       }
     #endif
     

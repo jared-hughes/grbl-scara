@@ -454,7 +454,7 @@ void report_realtime_status()
   if (bit_istrue(settings.status_report_mask,BITFLAG_RT_STATUS_MACHINE_POSITION)) {
 #ifndef SCARA
 	  printPgmString(PSTR(",MPos:"));
-#else  //System position in cartesian coord's
+#else  //System position in scara coord's
 	  printPgmString(PSTR(",SPos:"));
 #endif
     for (idx=0; idx< N_AXIS; idx++) {

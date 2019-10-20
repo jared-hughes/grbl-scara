@@ -34,6 +34,17 @@ void mc_line(float *target, float feed_rate, uint8_t invert_feed_rate, int32_t l
 void mc_line(float *target, float feed_rate, uint8_t invert_feed_rate);
 #endif
 
+#ifdef SCARA
+  struct Position {
+    float pos[N_AXIS];
+    bool outside;
+  };
+#endif
+
+#ifdef SCARA
+  struct Position mc_scara_coord(float *target);
+#endif
+
 #ifdef SEGMENTED_LINES
 #ifdef USE_LINE_NUMBERS
   void mc_segmented_line(float *position, float *target, float feed_rate, uint8_t invert_feed_rate, int32_t line_number);
