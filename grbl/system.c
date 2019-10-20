@@ -271,6 +271,17 @@ float system_convert_axis_steps_to_mpos(int32_t *steps, uint8_t idx)
     } else {
       pos = steps[idx]/settings.steps_per_mm[idx];
     }
+  #elif defined SCARA
+    // forward kinematics
+    if (idx == X_AXIS) {
+      pos = cos(steps[X_AXIS]/settings.steps_per_mm[X_AXIS]) * settings.lower_arm
+        + cos(steps[Y_AXIS]/settings.steps_per_mm[Y_AXIS]) * settings.upper_arm;
+    } else if (idx == Y_AXIS) {
+      pos = sin(steps[X_AXIS]/settings.steps_per_mm[X_AXIS]) * settings.lower_arm
+        + sin(steps[Y_AXIS]/settings.steps_per_mm[Y_AXIS]) * settings.upper_arm;
+    } else {
+      pos = steps[idx]/settings.steps_per_mm[idx];
+    }
   #else
     pos = steps[idx]/settings.steps_per_mm[idx];
   #endif
