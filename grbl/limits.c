@@ -328,15 +328,41 @@ void limits_go_home(uint8_t cycle_mask)
 }
 #endif
 
+void limits_soft_error() {
+  // Force feed hold if cycle is active. All buffered blocks are guaranteed to be within 
+  // workspace volume so just come to a controlled stop so position is not lost. When complete
+  // enter alarm mode.
+  if (sys.state == STATE_CYCLE) {
+    bit_true_atomic(sys_rt_exec_state, EXEC_FEED_HOLD);
+    do {
+      protocol_execute_realtime();
+      if (sys.abort) { return; }
+    } while ( sys.state != STATE_IDLE );
+  }
+
+  mc_reset(); // Issue system reset and ensure spindle and coolant are shutdown.
+  bit_true_atomic(sys_rt_exec_alarm, (EXEC_ALARM_SOFT_LIMIT|EXEC_CRITICAL_EVENT)); // Indicate soft limit critical event
+  protocol_execute_realtime(); // Execute to enter critical event loop and system abort
+  return;
+}
+
 // Performs a soft limit check. Called from mc_line() only. Assumes the machine has been homed,
 // the workspace volume is in all negative space, and the system is in normal operation.
 void limits_soft_check(float *target)
 {
   uint8_t idx;
   uint8_t soft_limit_error = false;
+  
+  #ifdef SCARA
+    float r2 = target[X_AXIS]*target[X_AXIS] + target[Y_AXIS]*target[Y_AXIS];
+    
+    if (r2 < settings.r_min_sq || r2 > settings.r_max_sq || target[X_AXIS] < settings.x_min) {
+      limits_soft_error();
+      return;
+    }
+  #else
   for (idx=0; idx<N_AXIS; idx++) {
-   
-    #ifdef HOMING_FORCE_SET_ORIGIN
+    #if defined HOMING_FORCE_SET_ORIGIN
       // When homing forced set origin is enabled, soft limits checks need to account for directionality.
       // NOTE: max_travel is stored as negative
       if (bit_istrue(settings.homing_dir_mask,bit(idx))) {
@@ -349,30 +375,10 @@ void limits_soft_check(float *target)
       if (target[idx] > 0 || target[idx] < settings.max_travel[idx]) { soft_limit_error = true; }
     #endif
     
-    #ifdef SCARA
-      float r = sqrt(target[X_AXIS]*target[X_AXIS] + target[Y_AXIS]*target[Y_AXIS]);
-      if (r < abs(settings.upper_arm - settings.lower_arm)
-        || r > settings.upper_arm + settings.lower_arm) {
-        soft_limit_error = true;
-      }
-    #endif
-    
     if (soft_limit_error) {
-      // Force feed hold if cycle is active. All buffered blocks are guaranteed to be within 
-      // workspace volume so just come to a controlled stop so position is not lost. When complete
-      // enter alarm mode.
-      if (sys.state == STATE_CYCLE) {
-        bit_true_atomic(sys_rt_exec_state, EXEC_FEED_HOLD);
-        do {
-          protocol_execute_realtime();
-          if (sys.abort) { return; }
-        } while ( sys.state != STATE_IDLE );
-      }
-    
-      mc_reset(); // Issue system reset and ensure spindle and coolant are shutdown.
-      bit_true_atomic(sys_rt_exec_alarm, (EXEC_ALARM_SOFT_LIMIT|EXEC_CRITICAL_EVENT)); // Indicate soft limit critical event
-      protocol_execute_realtime(); // Execute to enter critical event loop and system abort
+      limits_soft_error();
       return;
     }
   }
+  #endif
 }

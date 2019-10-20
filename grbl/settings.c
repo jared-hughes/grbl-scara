@@ -90,9 +90,15 @@ void settings_restore(uint8_t restore_flag) {
 	settings.acceleration[X_AXIS] = DEFAULT_X_ACCELERATION;
 	settings.acceleration[Y_AXIS] = DEFAULT_Y_ACCELERATION;
 	settings.acceleration[Z_AXIS] = DEFAULT_Z_ACCELERATION;
-	settings.max_travel[X_AXIS] = (-DEFAULT_X_MAX_TRAVEL);
-	settings.max_travel[Y_AXIS] = (-DEFAULT_Y_MAX_TRAVEL);
-	settings.max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL);
+  #ifndef SCARA
+  	settings.max_travel[X_AXIS] = (-DEFAULT_X_MAX_TRAVEL);
+  	settings.max_travel[Y_AXIS] = (-DEFAULT_Y_MAX_TRAVEL);
+  	settings.max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL);
+  #else
+    settings.x_min = DEFAULT_X_MIN;
+    settings.r_min_sq = DEFAULT_R_MIN*DEFAULT_R_MIN;
+    settings.r_max_sq = DEFAULT_R_MAX*DEFAULT_R_MAX;
+  #endif
   settings.offset[X_AXIS] = DEFAULT_X_OFFSET;
   settings.offset[Y_AXIS] = DEFAULT_Y_OFFSET;
   settings.offset[Z_AXIS] = DEFAULT_Z_OFFSET;
@@ -203,8 +209,11 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
             settings.max_rate[parameter] = value;
             break;
           case 2: settings.acceleration[parameter] = value*60*60; break; // Convert to mm/min^2 for grbl internal use.
-          case 3: settings.max_travel[parameter] = -value; break;  // Store as negative for grbl internal use.
-          case 4: settings.offset[parameter] = value; break;
+          #ifndef SCARA
+            case 3: settings.max_travel[parameter] = -value; break;  // Store as negative for grbl internal use.
+          #else
+            case 3: settings.offset[parameter] = value; break;
+          #endif
 
         }
         break; // Exit while-loop after setting has been configured and proceed to the EEPROM write call.
@@ -275,6 +284,9 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
       case 27: settings.homing_pulloff = value; break;
       case 28: settings.upper_arm = value; break;
       case 29: settings.lower_arm = value; break;
+      case 30: settings.x_min = value; break;
+      case 31: settings.r_min_sq = value*value; break;
+      case 32: settings.r_max_sq = value*value; break;
       default: 
         return(STATUS_INVALID_STATEMENT);
     }

@@ -28,8 +28,10 @@
 #define defaults_h
 
   // Grbl scara settings.
-  #define DEFAULT_X_STEPS_PER_MM 31.831 // actually steps/radian
-  #define DEFAULT_Y_STEPS_PER_MM 31.831 // actually steps/radian
+  #define DEFAULT_UPPER_ARM 152.0 // mm
+  #define DEFAULT_LOWER_ARM 174.0 // mm
+  #define DEFAULT_X_STEPS_PER_MM 31.831 // actually U steps/radian
+  #define DEFAULT_Y_STEPS_PER_MM 31.831 // actually L steps/radian
   #define DEFAULT_Z_STEPS_PER_MM 250.0
   #define DEFAULT_X_MAX_RATE 40.0 // rad/min
   #define DEFAULT_Y_MAX_RATE 40.0 // rad/min
@@ -37,11 +39,9 @@
   #define DEFAULT_X_ACCELERATION (2.0*60*60) // 10*60*60 rad/min^2 = 10 rad/sec^2
   #define DEFAULT_Y_ACCELERATION (2.0*60*60) // 10*60*60 rad/min^2 = 10 rad/sec^2
   #define DEFAULT_Z_ACCELERATION (2.0*60*60) // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_X_MAX_TRAVEL 1.0 // rad
-  #define DEFAULT_Y_MAX_TRAVEL 1.0 // rad
-  #define DEFAULT_Z_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_UPPER_ARM 152.0 // mm
-  #define DEFAULT_LOWER_ARM 174.0 // mm
+  #define DEFAULT_X_MIN 20.0 // mm
+  #define DEFAULT_R_MIN 100.0 // mm
+  #define DEFAULT_R_MAX (DEFAULT_UPPER_ARM + DEFAULT_LOWER_ARM) // mm
   #define DEFAULT_X_OFFSET (DEFAULT_UPPER_ARM + DEFAULT_LOWER_ARM) // mm
   #define DEFAULT_Y_OFFSET 0.0 // mm
   #define DEFAULT_Z_OFFSET 0.0 // mm
