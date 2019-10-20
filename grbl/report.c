@@ -196,6 +196,13 @@ void report_grbl_settings() {
     printPgmString(PSTR("\r\n$25=")); printFloat_SettingValue(settings.homing_seek_rate);
     printPgmString(PSTR("\r\n$26=")); print_uint8_base10(settings.homing_debounce_delay);
     printPgmString(PSTR("\r\n$27=")); printFloat_SettingValue(settings.homing_pulloff);
+    printPgmString(PSTR("\r\n$28=")); printFloat_SettingValue(settings.upper_arm);
+    printPgmString(PSTR("\r\n$29=")); printFloat_SettingValue(settings.lower_arm);
+    printPgmString(PSTR("\r\n$30=")); printFloat_SettingValue(settings.x_min);
+    printPgmString(PSTR("\r\n$31=")); printFloat_SettingValue(sqrt(settings.r_min_sq));
+    printPgmString(PSTR("\r\n$32=")); printFloat_SettingValue(sqrt(settings.r_max_sq));
+    printPgmString(PSTR("\r\n$33=")); printFloat_SettingValue(settings.segmentation_tolerance);
+    printPgmString(PSTR("\r\n$34=")); printFloat_SettingValue(settings.mm_per_segment);
     printPgmString(PSTR("\r\n"));
   #else      
     printPgmString(PSTR("$0=")); print_uint8_base10(settings.pulse_microseconds);
@@ -225,7 +232,7 @@ void report_grbl_settings() {
     printPgmString(PSTR(" (upper_arm, mm)\r\n$29=")); printFloat_SettingValue(settings.lower_arm);
     printPgmString(PSTR(" (lower_arm, mm)\r\n$30=")); printFloat_SettingValue(settings.x_min);
     printPgmString(PSTR(" (x_min, mm)\r\n$31=")); printFloat_SettingValue(sqrt(settings.r_min_sq));
-    printPgmString(PSTR(" (r_min, mm)\r\n$32=")); printFloat_SettingValue(settings.x_min);
+    printPgmString(PSTR(" (r_min, mm)\r\n$32=")); printFloat_SettingValue(sqrt(settings.r_max_sq));
     printPgmString(PSTR(" (r_max, mm)\r\n$33=")); printFloat_SettingValue(settings.segmentation_tolerance);
     printPgmString(PSTR(" (segmentation_tolerance, mm)\r\n$34=")); printFloat_SettingValue(settings.mm_per_segment);
     printPgmString(PSTR(" (mm_per_segment, mm)\r\n"));
@@ -262,8 +269,11 @@ void report_grbl_settings() {
           case 0: printPgmString(PSTR(", step/mm")); break;
           case 1: printPgmString(PSTR(" max rate, mm/min")); break;
           case 2: printPgmString(PSTR(" accel, mm/sec^2")); break;
-          case 3: printPgmString(PSTR(" max travel, mm")); break;
-          case 4: printPgmString(PSTR(" offset, mm")); break;
+          #ifndef SCARA
+            case 3: printPgmString(PSTR(" max travel, mm")); break;
+          #else
+            case 3: printPgmString(PSTR(" offset, mm")); break;
+          #endif
         }      
         printPgmString(PSTR(")\r\n"));
       #endif
