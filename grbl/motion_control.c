@@ -69,108 +69,18 @@
   #ifdef USE_LINE_NUMBERS
     plan_buffer_line(target, feed_rate, invert_feed_rate, line_number);
   #elif defined SCARA
-    struct Position desired = mc_scara_coord(target);
-    if (desired.outside) {
-      return;
-    }
     // for (int idx = 0; idx < N_AXIS; idx++) {
     //   printString(" 01 desired ");
     //   printFloat_CoordValue(desired.pos[idx]);
     //   printString("\n");
     // }
-    plan_buffer_line(desired.pos, feed_rate, invert_feed_rate);
-    gc_state.position[X_AXIS] = desired.pos[X_AXIS];
-    gc_state.position[Y_AXIS] = desired.pos[Y_AXIS];
+    plan_buffer_line(target, feed_rate, invert_feed_rate);
+    // gc_state.position[X_AXIS] = desired.pos[X_AXIS];
+    // gc_state.position[Y_AXIS] = desired.pos[Y_AXIS];
   #else
     plan_buffer_line(target, feed_rate, invert_feed_rate);
   #endif
 }
-
-#ifdef SCARA
-struct Position mc_scara_coord(float *target) {
-  // printString("xy\n");
-  // printFloat_CoordValue(target[X_AXIS]);
-  // printString("\n");
-  // printFloat_CoordValue(target[Y_AXIS]);
-  // printString("\n");
-  //Change from cartessian to scara coordinates
-  // TODO: optimize a bit -- avoid some trig: consider https://cdn.hackaday.io/files/1627356962454240/gCode2SCARA.c
-  struct Position target_scara;
-  // for (int idx = 0; idx < N_AXIS; idx++) {
-  //   printString(" 02 mc_scara target cartesian ");
-  //   printFloat_CoordValue(target[idx]);
-  //   printString("\n");
-  // }
-  float x = target[X_AXIS];
-  float y = target[Y_AXIS];
-  float r_squared = x*x+y*y;
-  float l1 = settings.upper_arm;
-  float l1_squared = l1 * l1;
-  float l2 = settings.lower_arm;
-  float l2_squared = l2 * l2;
-  float s = (l1 + l2)*(l1 + l2);
-  float sm = (l1 - l2)*(l1 - l2);
-  float r = sqrt(r_squared);
-  if (r < abs(settings.upper_arm - settings.lower_arm)
-    || r > settings.upper_arm + settings.lower_arm) {
-    target_scara.outside = true;
-    return target_scara;
-  }
-  // printString("Yoohoo\n");
-  // printString("r_squared ");
-  // printFloat_CoordValue(r_squared);
-  // printString(" sm ");
-  // printFloat_CoordValue(sm);
-  // printString(" s ");
-  // printFloat_CoordValue(s);
-  // printString("Top");
-  // printFloat_CoordValue(sqrt(r_squared - sm));
-  // printString("\n Bottom");
-  // printFloat_CoordValue(sqrt(s - r_squared));
-  // printString("\n");
-  float theta = 2 * atan2(sqrt(r_squared - sm), sqrt(s - r_squared));
-  // printString("uv-degrees\n");
-  target_scara.pos[X_AXIS] = theta;
-  target_scara.pos[Y_AXIS] = atan2(y, x) +
-    atan2(2 * l1 * l2 * sin(theta), l1_squared + r_squared - l2_squared);
-  // printString("theta0 ");
-  // printFloat_CoordValue(target_scara.pos[X_AXIS]);
-  // printString("\n");
-  target_scara.pos[X_AXIS] -= M_PI-target_scara.pos[Y_AXIS];
-  // printString("theta1 ");
-  // printFloat_CoordValue(target_scara.pos[X_AXIS]);
-  // printString("\n ");
-  // printFloat_CoordValue(theta * 180/3.1415);
-  // printString("\n");
-  // printString("t ");
-  // printFloat_CoordValue(target_scara.pos[Y_AXIS]);
-  // printString("\n ");
-  // printFloat_CoordValue(target_scara[Y_AXIS] * 180/3.1415);
-  // printString("\n");
-  target_scara.pos[Z_AXIS] = target[Z_AXIS];
-  // printFloat_CoordValue(target_scara.pos[Z_AXIS]);
-  // printString("\n ");
-  // printString("uv-mm\n");
-  // printFloat_CoordValue(target_scara[X_AXIS]);
-  // printString("\n");
-  // printFloat_CoordValue(target_scara[Y_AXIS]);
-  // printString("\n");
-  // 
-  // printString("mc_line target\n");
-  // printFloat_CoordValue(target_scara[X_AXIS]);
-  // printString("\n");
-  // printFloat_CoordValue(target_scara[Y_AXIS]);
-  // printString("\n-----\n");
-  target_scara.outside = false;
-  // for (int idx = 0; idx < N_AXIS; idx++) {
-  //   printString(" 03 target_scara scara ");
-  //   printFloat_CoordValue(target_scara.pos[idx]);
-  //   printString("\n");
-  // }
-  // printString("done buffer\n");
-  return target_scara;
-}
-#endif
 
 //Segment straight lines to ensure linear movement when the coordinates system is changed
 #ifdef SEGMENTED_LINES
@@ -395,12 +305,7 @@ void mc_homing_cycle()
   gc_sync_position();
 #else
   gc_sync_position();
-  struct Position desired = mc_scara_coord(settings.offset);
-  uint8_t idx;
-  for (idx=0; idx<N_AXIS; idx++) {
-    gc_state.position[idx] = desired.pos[idx];
-  }
-
+  // system_convert_mpos_to_array_steps(gc_state.position, settings.offset);
 #endif
   // If hard limits feature enabled, re-enable hard limits pin change register after homing cycle.
   limits_init();

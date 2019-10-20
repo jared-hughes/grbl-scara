@@ -315,22 +315,8 @@ void limits_go_home(uint8_t cycle_mask)
 #else 
 void limits_go_home(uint8_t cycle_mask)
 {
-  // TODO: set proper initial position
-  struct Position desired = mc_scara_coord(settings.offset);
-  uint8_t idx;
-  for (idx=0; idx<N_AXIS; idx++) {
-    // printString("Want sys.position (rads): ");
-    // printInteger(idx);
-    // printString(": ");
-    // printFloat_CoordValue(desired.pos[idx]);
-    // printString("\n");
-    sys.position[idx] = desired.pos[idx] * settings.steps_per_mm[idx];
-    // printString("Set sys.position: ");
-    // printInteger(idx);
-    // printString(": ");
-    // printFloat_CoordValue(sys.position[idx]);
-    // printString("\n");
-}
+  // effectively just zeroing
+  system_convert_mpos_to_array_steps(sys.position, settings.offset);
   report_realtime_status();
   // update pl.position;
   plan_sync_position();

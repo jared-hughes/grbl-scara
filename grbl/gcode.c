@@ -973,6 +973,7 @@ uint8_t gc_execute_line(char *line)
 			#ifndef SEGMENTED_LINES
             mc_line(gc_block.values.xyz, gc_state.feed_rate, gc_state.modal.feed_rate);
 			#else
+            system_convert_array_steps_to_mpos(gc_state.position,sys.position);
             mc_segmented_line(gc_state.position,gc_block.values.xyz, gc_state.feed_rate, gc_state.modal.feed_rate);
             #endif
 		  #endif

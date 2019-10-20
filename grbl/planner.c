@@ -274,11 +274,22 @@ uint8_t plan_check_full_buffer()
   int32_t target_steps[N_AXIS];
   float unit_vec[N_AXIS], delta_mm;
   uint8_t idx;
+  
+  for (idx = 0; idx < N_AXIS; idx++) {
+    printString("Plan Buffer Line Target: ");
+    printInteger(idx);
+    printString("\t");
+    printFloat_CoordValue(target[idx]);
+    printString("\n");
+  }
+  
   #ifdef COREXY
     target_steps[A_MOTOR] = lround(target[A_MOTOR]*settings.steps_per_mm[A_MOTOR]);
     target_steps[B_MOTOR] = lround(target[B_MOTOR]*settings.steps_per_mm[B_MOTOR]);
     block->steps[A_MOTOR] = labs((target_steps[X_AXIS]-pl.position[X_AXIS]) + (target_steps[Y_AXIS]-pl.position[Y_AXIS]));
     block->steps[B_MOTOR] = labs((target_steps[X_AXIS]-pl.position[X_AXIS]) - (target_steps[Y_AXIS]-pl.position[Y_AXIS]));
+  #elif defined SCARA
+    system_convert_mpos_to_array_steps(target_steps, target);
   #endif
 
   for (idx=0; idx<N_AXIS; idx++) {
@@ -302,9 +313,11 @@ uint8_t plan_check_full_buffer()
       // printString(" 00 target ");
       // printFloat_CoordValue(target[idx]);
       // printString("\n");
-      target_steps[idx] = lround(target[idx]*settings.steps_per_mm[idx]);
+      #ifndef SCARA
+        target_steps[idx] = lround(target[idx]*settings.steps_per_mm[idx]);
+      #endif
       // printInteger(idx);
-      // printString(" coord steps: ");
+      // printString(" target steps: ");
       // printFloat_CoordValue(target_steps[idx]);
       // printString(" -- ");
       // printFloat_CoordValue(pl.position[idx]);

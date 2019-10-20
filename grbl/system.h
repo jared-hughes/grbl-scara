@@ -105,4 +105,7 @@ float system_convert_axis_steps_to_mpos(int32_t *steps, uint8_t idx);
 // Updates a machine 'position' array based on the 'step' array sent.
 void system_convert_array_steps_to_mpos(float *position, int32_t *steps);
 
+// Computes steps from desired machine position
+void system_convert_mpos_to_array_steps(int32_t *target_steps, float* position);
+
 #endif

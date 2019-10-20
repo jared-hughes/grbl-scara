@@ -297,3 +297,34 @@ void system_convert_array_steps_to_mpos(float *position, int32_t *steps)
   }
   return;
 }
+
+#ifdef SCARA
+void system_convert_mpos_to_array_steps(int32_t *target_steps, float* position)
+{
+  uint8_t idx;
+  float x = position[X_AXIS];
+  float y = position[Y_AXIS];
+  float r_squared = x*x+y*y;
+  float l1 = settings.upper_arm;
+  float l1_squared = l1 * l1;
+  float l2 = settings.lower_arm;
+  float l2_squared = l2 * l2;
+  float s = (l1 + l2)*(l1 + l2);
+  float sm = (l1 - l2)*(l1 - l2);
+  float r = sqrt(r_squared);
+  // if (r < abs(settings.upper_arm - settings.lower_arm)
+  //   || r > settings.upper_arm + settings.lower_arm) {
+  //   return target_scara;
+  // }
+  float theta = 2 * atan2(sqrt(r_squared - sm), sqrt(s - r_squared));
+  target_steps[Y_AXIS] = lround(settings.steps_per_mm[Y_AXIS] * (atan2(y, x) +
+    atan2(2 * l1 * l2 * sin(theta), l1_squared + r_squared - l2_squared)));
+  target_steps[X_AXIS] = lround(settings.steps_per_mm[X_AXIS] * (theta - M_PI))
+    + target_steps[Y_AXIS];
+  for (idx=0; idx<N_AXIS; idx++) {
+    if (idx != X_AXIS && idx != Y_AXIS) {
+      target_steps[idx] = lround(position[idx] * settings.steps_per_mm[idx]);
+    }
+  }
+}
+#endif
