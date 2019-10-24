@@ -28,10 +28,11 @@
 #define defaults_h
 
   // Grbl scara settings.
-  #define DEFAULT_UPPER_ARM 152.0 // mm
-  #define DEFAULT_LOWER_ARM 174.0 // mm
-  #define DEFAULT_X_STEPS_PER_MM 31.831 // actually U steps/radian
-  #define DEFAULT_Y_STEPS_PER_MM 31.831 // actually L steps/radian
+  #define MICROSTEPS_XY 4
+  #define DEFAULT_UPPER_ARM 157.08 // mm
+  #define DEFAULT_LOWER_ARM 183.45 // mm
+  #define DEFAULT_X_STEPS_PER_MM 31.831*MICROSTEPS_XY // actually U steps/radian
+  #define DEFAULT_Y_STEPS_PER_MM 31.831*MICROSTEPS_XY // actually L steps/radian
   #define DEFAULT_Z_STEPS_PER_MM 250.0
   #define DEFAULT_X_MAX_RATE 40.0 // rad/min
   #define DEFAULT_Y_MAX_RATE 40.0 // rad/min
