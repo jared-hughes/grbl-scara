@@ -107,9 +107,8 @@ void spindle_run(uint8_t direction, float rpm)
 
 	#ifdef VARIABLE_SPINDLE
 
-      // TODO: Install the optional capability for frequency-based output for servos.
-      #define SPINDLE_RPM_RANGE (SPINDLE_MAX_RPM-SPINDLE_MIN_RPM)
-      #define RC_SERVO_RANGE (RC_SERVO_LONG-RC_SERVO_SHORT)
+    // TODO: Install the optional capability for frequency-based output for servos.
+    #define RC_SERVO_RANGE (RC_SERVO_LONG-RC_SERVO_SHORT)
 
 	  #ifdef CPU_MAP_ATMEGA2560
       	TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
@@ -121,20 +120,20 @@ void spindle_run(uint8_t direction, float rpm)
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x07; // set to 1/1024 Prescaler
 	    uint8_t current_pwm;
 	  #endif
+    
+    // clamp from 0 to 1
+    if (rpm < 0) rpm = 0;
+    if (rpm > 1) rpm = 1;
+    // scale from MIN to MAX
+    rpm = SPINDLE_MIN_RATIO + (SPINDLE_MAX_RATIO - SPINDLE_MIN_RATIO) * rpm;
 
-	   if ( rpm < SPINDLE_MIN_RPM ) { rpm = 0; }
-      else { 
-        rpm -= SPINDLE_MIN_RPM; 
-        if ( rpm > SPINDLE_RPM_RANGE ) { rpm = SPINDLE_RPM_RANGE; } // Prevent integer overflow
-      }
-
-      #ifdef RC_SERVO_INVERT
-          current_pwm = floor( RC_SERVO_LONG - rpm*(RC_SERVO_RANGE/SPINDLE_RPM_RANGE));
-          OCR_REGISTER = current_pwm;
-      #else
-         current_pwm = floor( rpm*(RC_SERVO_RANGE/SPINDLE_RPM_RANGE) + RC_SERVO_SHORT);
-          OCR_REGISTER = current_pwm;
-      #endif
+    #ifdef RC_SERVO_INVERT
+        current_pwm = floor( RC_SERVO_LONG - rpm*RC_SERVO_RANGE);
+        OCR_REGISTER = current_pwm;
+    #else
+       current_pwm = floor( rpm*RC_SERVO_RANGE + RC_SERVO_SHORT);
+        OCR_REGISTER = current_pwm;
+    #endif
 	  #ifdef MINIMUM_SPINDLE_PWM
         if (current_pwm < MINIMUM_SPINDLE_PWM) { current_pwm = MINIMUM_SPINDLE_PWM; }
 	     OCR_REGISTER = current_pwm;

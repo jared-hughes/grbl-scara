@@ -261,9 +261,8 @@
   #define SPINDLE_MAX_RPM 1000.0 // Max spindle RPM. This value is equal to 100% duty cycle on the PWM.
   #define SPINDLE_MIN_RPM 0.0    // Min spindle RPM. This value is equal to (1/256) duty cycle on the PWM.
 #else
-  #define SPINDLE_MAX_RATIO 0.25 // ratio of total distance that the servo should be when all the way down
-  #define SPINDLE_MAX_RPM 1.0/SPINDLE_MAX_RATIO // Max spindle RPM. This value is equal to 100% duty cycle on the PWM.
-  #define SPINDLE_MIN_RPM 0.0    // Min spindle RPM. This value is equal to (1/256) duty cycle on the PWM.
+  #define SPINDLE_MIN_RATIO 0.04 // ratio of total rotation that the servo should be when all the way up
+  #define SPINDLE_MAX_RATIO 0.25 // ratio of total rotation that the servo should be when all the way down
 #endif
 
 // Used by variable spindle output only. This forces the PWM output to a minimum duty cycle when enabled.
